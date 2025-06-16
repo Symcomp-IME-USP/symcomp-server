@@ -16,6 +16,7 @@ class Palestrante(models.Model):
     foto_url = models.URLField()
     foto_alt = models.CharField(max_length=255)
     links = models.ManyToManyField(Link, related_name="palestrantes")
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nome

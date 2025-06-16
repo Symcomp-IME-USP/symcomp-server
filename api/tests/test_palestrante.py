@@ -172,3 +172,28 @@ def test_atualizar_todos_os_campos_do_palestrante():
     assert palestrante.ocupacao == "Professor"
     assert palestrante.biografia == "Nova biografia."
 
+@pytest.mark.django_db
+def test_soft_delete_palestrante():
+    palestrante = Palestrante.objects.create(
+        nome="João",
+        ocupacao="Psicólogo",
+        biografia="Biografia",
+        email="joao@email.com",
+        link_apresentacao="https://apresentacao.com",
+        foto_url="https://fotos.com/joao.jpg",
+        foto_alt="João falando"
+    )
+
+    client = APIClient()
+    url = reverse("palestrante-detail", args=[palestrante.id])
+    
+    response = client.delete(url)
+    assert response.status_code == 204
+
+    palestrante.refresh_from_db()
+    assert palestrante.active is False
+
+    # Confirma que ele não aparece na listagem
+    response = client.get(reverse("palestrante-list"))
+    nomes = [p["nome"] for p in response.data]
+    assert "João" not in nomes
