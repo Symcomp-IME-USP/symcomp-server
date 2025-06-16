@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Palestrante
-from .serializers import PalestranteSerializer
+from api.models import Palestrante
+from api.serializers import PalestranteSerializer
 
 class PalestranteViewSet(viewsets.ModelViewSet):
     queryset = Palestrante.objects.all()
