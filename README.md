@@ -13,6 +13,7 @@ Then, install the dependencies
 pip install django
 pip install dotenv
 pip install pytest
+pip install pytest-bdd
 ```
 
 Run the migrations
