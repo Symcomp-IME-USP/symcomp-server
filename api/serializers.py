@@ -1,5 +1,7 @@
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from .models import Palestrante, Link
+from .validators import validate_strong_password
+from .models import Palestrante, Link, User
 
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,3 +42,24 @@ class PalestranteSerializer(serializers.ModelSerializer):
                 instance.links.add(link)
 
         return instance
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, validators=[validate_strong_password])
+
+    class Meta:
+        model = User
+        fields = ['email', 'name', 'password']
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+
+class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        return super().get_token(user)
+
+    def validate(self, attrs):
+        attrs['username'] = attrs.get('email')
+        return super().validate(attrs)
