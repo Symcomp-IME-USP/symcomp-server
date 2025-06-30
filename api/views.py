@@ -46,3 +46,25 @@ class RegisterView(APIView):
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
+
+class ValidateCodeView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        code = request.data.get("code")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"error": "Usuário não encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            evc = EmailVerificationCode.objects.filter(user=user, code=code, is_used=False).latest("created_at")
+        except EmailVerificationCode.DoesNotExist:
+            return Response({"error": "Código inválido ou expirado"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.is_active = True
+        user.save()
+        evc.is_used = True
+        evc.save()
+
+        return Response({"message": "Usuário validado com sucesso"}, status=status.HTTP_200_OK)
