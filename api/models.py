@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.utils import timezone
 
 class Link(models.Model):
     domain = models.CharField(max_length=100)
@@ -29,7 +30,7 @@ class UserManager(BaseUserManager):
         if not name:
             raise ValueError("O nome completo é obrigatório.")
         email = self.normalize_email(email)
-        user = self.model(email=email, name=name)
+        user = self.model(email=email, name=name, is_active=False)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -38,13 +39,14 @@ class UserManager(BaseUserManager):
         user = self.create_user(email, name, password)
         user.is_staff = True
         user.is_superuser = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
@@ -54,3 +56,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+class EmailVerificationCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="verification_codes")
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(default=timezone.now)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Code {self.code} for {self.user.email}"
+
+    class Meta:
+        ordering = ['-created_at']

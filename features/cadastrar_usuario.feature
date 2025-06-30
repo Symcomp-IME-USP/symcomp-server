@@ -2,10 +2,27 @@
 
 Funcionalidade: Cadastrar usuário
 
-    Cenário: Novo usuário faz cadastro com sucesso
+    Cenário: Usuário preenche cadastro e recebe código de validação
         Dado que João está acessando pela primeira vez
-        Quando ele preenhce as informações solicitadas
+        Quando ele preenche corretamente as informações solicitadas para cadastro
+        Então ele deve receber um e-mail contendo um código de validação
+
+    Cenário: Usuário valida código e efetiva login
+        Dado que João recebeu o código de validação por e-mail
+        Quando ele informa corretamente o código recebido
         Então ele deve estar logado na plataforma
+
+    Cenário: Usuário solicita reenvio de código após não receber o primeiro
+        Dado que João não recebeu o código de validação inicial
+        E já se passou pelo menos 1 minuto desde o pedido anterior
+        Quando ele solicita o reenvio do código de validação
+        Então ele deve receber um novo e-mail com o código de validação
+
+    Cenário: Usuário altera e-mail para receber código após não receber o reenvio
+        Dado que João não recebeu o código de validação após solicitar reenvio
+        E já se passou pelo menos 1 minuto desde o último pedido
+        Quando ele altera o e-mail para um endereço válido diferente
+        Então ele deve receber um e-mail com o código de validação no novo endereço
 
     Cenário: Usuário faz cadastro, mas já está cadastrado
         Dado que João já fez seu cadastro

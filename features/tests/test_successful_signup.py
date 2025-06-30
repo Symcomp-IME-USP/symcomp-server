@@ -1,6 +1,7 @@
 import pytest
 from pytest_bdd import given, when, then, scenario
 from api.models import User
+from django.core import mail
 from rest_framework.test import APIClient
 
 @pytest.fixture
@@ -16,24 +17,22 @@ def usuario_dados():
     }
 
 @pytest.mark.django_db
-@scenario('../cadastrar_usuario.feature', 'Novo usuário faz cadastro com sucesso')
-def test_cadastro_usuario():
+@scenario('../cadastrar_usuario.feature', 'Usuário preenche cadastro e recebe código de validação')
+def test_usuario_recebe_codigo_de_validacao():
     pass
 
 @given('que João está acessando pela primeira vez')
 def nenhum_usuario_joao_existe():
     User.objects.filter(email="joao@example.com").delete()
 
-@when('ele preenhce as informações solicitadas')
+@when('ele preenche corretamente as informações solicitadas para cadastro')
 def envia_dados_de_cadastro(client, usuario_dados):
     resposta = client.post("/api/register/", data=usuario_dados)
     assert resposta.status_code == 201
 
-@then('ele deve estar logado na plataforma')
-def verifica_autenticacao_automatica(client, usuario_dados):
-    resposta = client.post("/api/token/", data={
-        "email": usuario_dados["email"],
-        "password": usuario_dados["password"]
-    })
-    assert resposta.status_code == 200
-    assert "access" in resposta.data
+@then('ele deve receber um e-mail contendo um código de validação')
+def verifica_envio_email_codigo():
+    assert len(mail.outbox) == 1
+    email = mail.outbox[0]
+    assert "código de validação" in email.body.lower() or "code" in email.body.lower()
+    assert email.to == ["joao@example.com"]
