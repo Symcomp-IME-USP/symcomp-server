@@ -12,7 +12,8 @@ def usuario_dados():
     return {
         "username": "joao",
         "email": "joao@example.com",
-        "password": "senha_segura"
+        "password": "senha_segura",
+        "name": "João Vitor Fernandes Domingues"
     }
 
 @pytest.mark.django_db
