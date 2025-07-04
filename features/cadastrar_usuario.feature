@@ -12,12 +12,14 @@ Funcionalidade: Cadastrar usuário
         Quando ele informa corretamente o código recebido
         Então ele deve estar logado na plataforma
 
+    # Não implmentado
     Cenário: Usuário solicita reenvio de código após não receber o primeiro
         Dado que João não recebeu o código de validação inicial
         E já se passou pelo menos 1 minuto desde o pedido anterior
         Quando ele solicita o reenvio do código de validação
         Então ele deve receber um novo e-mail com o código de validação
 
+    # Não implmentado
     Cenário: Usuário altera e-mail para receber código após não receber o reenvio
         Dado que João não recebeu o código de validação após solicitar reenvio
         E já se passou pelo menos 1 minuto desde o último pedido

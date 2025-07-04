@@ -22,7 +22,7 @@ class RegisterView(APIView):
     def post(self, request):
         data = request.data
         if User.objects.filter(email=data["email"]).exists():
-            return Response({"error": "Usuário já existe"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Usuário já existe"}, status=status.HTTP_409_CONFLICT)
         
         user = User.objects.create_user(
             name=data["name"],
