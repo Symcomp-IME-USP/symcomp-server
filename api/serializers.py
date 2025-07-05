@@ -45,7 +45,14 @@ class PalestranteSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[validate_strong_password])
+    password = serializers.CharField(
+        write_only=True,
+        validators=[validate_strong_password],
+        error_messages={
+            "blank": "A senha não pode ser vazia.",
+            "required": "O campo senha é obrigatório."
+        }
+    )
 
     class Meta:
         model = User
@@ -53,6 +60,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
 
 
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):

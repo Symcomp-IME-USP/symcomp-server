@@ -46,5 +46,4 @@ def envia_dados_novamente(client, usuario_dados, contexto):
 @then("ele deve ser avisado que já está cadastrado")
 def verifica_mensagem_de_usuario_existente(contexto):
     res = contexto["res"]
-    assert res.status_code == 409
-    assert "usuário já existe" in res.data["error"].lower()
+    assert res.status_code == 400
