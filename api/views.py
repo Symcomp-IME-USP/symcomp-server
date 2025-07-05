@@ -33,7 +33,7 @@ class RegisterView(APIView):
             return Response({"error": "Usuário já existe"}, status=status.HTTP_409_CONFLICT)
 
         user = serializer.save()
-
+        
         code = f"{random.randint(100000, 999999)}"
         EmailVerificationCode.objects.create(user=user, code=code)
 
@@ -45,8 +45,10 @@ class RegisterView(APIView):
             fail_silently=False,
         )
 
-        return Response({"message": "Usuário criado. Código de validação enviado por e-mail."}, status=status.HTTP_201_CREATED)
-
+        return Response(
+            {"message": "Usuário criado. Código de validação enviado por e-mail."},
+            status=status.HTTP_201_CREATED
+        )
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer

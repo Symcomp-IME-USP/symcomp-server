@@ -56,9 +56,9 @@ Funcionalidade: Cadastrar usuário
         Quando ele tenta cadastrar uma senha com menos de 8 caracteres
         Então ele deve ser avisado que a senha é fraca
 
-    Cenário: Senha com mais de 255 caracteres
+    Cenário: Senha com mais de 510 caracteres
         Dado que João preencheu todas as informações solicitadas 
-        Quando ele tenta cadastrar uma senha com mais de 255 caracteres
+        Quando ele tenta cadastrar uma senha com mais de 510 caracteres
         Então ele deve ser avisado que a senha é invalida
 
     Cenário: Usuário faz cadastro pelo Google Auth (OAuth)

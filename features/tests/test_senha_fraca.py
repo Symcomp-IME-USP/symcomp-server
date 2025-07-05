@@ -1,6 +1,5 @@
 import pytest
 from pytest_bdd import given, when, then, scenario
-from api.models import User, EmailVerificationCode
 from rest_framework.test import APIClient
 
 @pytest.fixture
@@ -14,10 +13,6 @@ def usuario_dados():
 @pytest.fixture
 def contexto():
     return {}
-
-@pytest.fixture
-def codigo_verificacao():
-    return "123456"
 
 @pytest.mark.django_db
 @scenario('../cadastrar_usuario.feature', 'Senha sem letras')

@@ -51,7 +51,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         error_messages={
             "blank": "A senha não pode ser vazia.",
             "required": "O campo senha é obrigatório."
-        }
+        },
+        max_length=255,
+        allow_blank=False
     )
 
     class Meta:
