@@ -59,7 +59,7 @@ Funcionalidade: Cadastrar usuário
     Cenário: Senha com mais de 255 caracteres
         Dado que João preencheu todas as informações solicitadas 
         Quando ele tenta cadastrar uma senha com mais de 255 caracteres
-        Então ele deve ser avisado que a senha é valida
+        Então ele deve ser avisado que a senha é invalida
 
     Cenário: Usuário faz cadastro pelo Google Auth (OAuth)
         Dado que João está acessando pela primeira vez 
