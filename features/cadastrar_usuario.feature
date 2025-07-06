@@ -61,11 +61,13 @@ Funcionalidade: Cadastrar usuário
         Quando ele tenta cadastrar uma senha com mais de 510 caracteres
         Então ele deve ser avisado que a senha é invalida
 
+    # Não implmentado
     Cenário: Usuário faz cadastro pelo Google Auth (OAuth)
         Dado que João está acessando pela primeira vez 
         Quando ele clica em logar com Google
         Então ele deve estar logado na plataforma
 
+    # Não implmentado
     Cenário: Usuário faz cadastro pelo Google Auth (OAuth), mas já está cadastrado
         Dado que João já se cadastrou no sistema
         Quando ele clica em cadastrar com o Google
