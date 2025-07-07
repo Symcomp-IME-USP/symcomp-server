@@ -11,18 +11,6 @@ from .serializers import (
 )
 import random
 
-
-class PalestranteViewSet(viewsets.ModelViewSet):
-    queryset = Palestrante.objects.filter(active=True)
-    serializer_class = PalestranteSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.active = False
-        instance.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
