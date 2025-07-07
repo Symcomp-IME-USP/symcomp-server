@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 class Link(models.Model):
     domain = models.CharField(max_length=100)
@@ -8,20 +9,33 @@ class Link(models.Model):
 
     def __str__(self):
         return self.domain
+    
+class Papel(models.TextChoices):
+    PRESIDENTE = 'presidente', 'Presidente'
+    ORGANIZADOR = 'organizador', 'Organizador'
+    PALESTRANTE = 'palestrante', 'Palestrante'
+    PARTICIPANTE = 'participante', 'Participante'
+
+class PerfilUsuario(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='perfil')
+    papel = models.CharField(max_length=30, choices=Papel.choices)
+    data_registro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.get_papel_display()}"
 
 class Palestrante(models.Model):
-    nome = models.CharField(max_length=255)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='palestrante')
     ocupacao = models.CharField(max_length=255)
     biografia = models.TextField()
-    email = models.EmailField()
     link_apresentacao = models.URLField()
     foto_url = models.URLField()
     foto_alt = models.CharField(max_length=255)
     links = models.ManyToManyField(Link, related_name="palestrantes")
-    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nome
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, name, password=None):

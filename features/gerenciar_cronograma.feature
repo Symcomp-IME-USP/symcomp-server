@@ -3,10 +3,9 @@
 Funcionalidade: Criar um cronograma
     Cenário: O presidente do grupo cria um cronograma
         Dado que Odair é o presidente do grupo
-        Quando ele fornece o intervalo de dias que o evento acontecerá
-        E insere o intervalo de horas que o evento deve acontecer nos dias especificados
+        Quando ele fornece corretamente as informações sobre o cronograma
         Então deve ser possível cadastrar uma palestra no intervalo especificado
-        E não pode ser possível cadastrar uma palestra nos intervalos
+        E não pode ser possível cadastrar uma palestra nas pausas
 
     Cenário: O presidente do grupo define os horários de coffee break
         Dado que Anna é presidente do grupo
