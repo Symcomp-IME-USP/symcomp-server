@@ -1,3 +1,67 @@
-/venv
-.pytest_cache
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Django
+*.sqlite3
+*.log
 db.sqlite3
+media/
+staticfiles/
+static_root/
+.env
+.env.*
+
+# Django migrations (opcional: se você quiser ignorar migrations)
+**/migrations/
+!**/migrations/__init__.py
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Virtualenv
+venv/
+env/
+.venv/
+ENV/
+.envrc
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Coverage / testing
+htmlcov/
+.coverage
+.tox/
+.nox/
+.cache/
+.pytest_cache/
+
+# MyPy / Pylint / Ruff / etc.
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+.pylint.d/
+ruff_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Node (caso use js front-end no projeto)
+node_modules/
+
+# System
+Thumbs.db
