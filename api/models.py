@@ -18,11 +18,19 @@ class Papel(models.TextChoices):
 
 class PerfilUsuario(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='perfil')
-    papel = models.CharField(max_length=30, choices=Papel.choices)
+    papel = models.CharField(max_length=30, choices=Papel.choices, default=Papel.PARTICIPANTE)
     data_registro = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.email} - {self.get_papel_display()}"
+    
+class DesignacaoDePapel(models.Model):
+    email = models.EmailField(unique=True)
+    papel = models.CharField(max_length=30, choices=Papel.choices)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.email} → {self.get_papel_display()}"
 
 class Palestrante(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='palestrante')
