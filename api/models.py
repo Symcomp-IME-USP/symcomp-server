@@ -33,7 +33,8 @@ class DesignacaoDePapel(models.Model):
         return f"{self.email} → {self.get_papel_display()}"
 
 class Palestrante(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='palestrante')
+    email = models.EmailField(unique=True)
+    display_name = models.CharField(max_length=255)
     ocupacao = models.CharField(max_length=255)
     biografia = models.TextField()
     link_apresentacao = models.URLField()

@@ -1,15 +1,18 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import viewsets, status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
-from .models import Palestrante, User, EmailVerificationCode
+from .models import PerfilUsuario, Papel, User, EmailVerificationCode, Palestrante
 from .serializers import (
-    PalestranteSerializer,
     EmailTokenObtainPairSerializer,
-    RegisterSerializer
+    RegisterSerializer, PalestranteSerializer
 )
 import random
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class RegisterView(APIView):
     def post(self, request):
@@ -41,7 +44,6 @@ class RegisterView(APIView):
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
 
-
 class ValidateCodeView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -63,3 +65,59 @@ class ValidateCodeView(APIView):
         evc.save()
 
         return Response({"message": "Usuário validado com sucesso"}, status=status.HTTP_200_OK)
+
+class PromoverUsuarioView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response({'erro': 'Autenticação necessária.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            perfil_solicitante = request.user.perfil
+        except PerfilUsuario.DoesNotExist:
+            return Response({'erro': 'Usuário sem perfil.'}, status=status.HTTP_403_FORBIDDEN)
+
+        if perfil_solicitante.papel not in [Papel.ORGANIZADOR, Papel.PRESIDENTE]:
+            return Response({'erro': 'Permissão negada.'}, status=status.HTTP_403_FORBIDDEN)
+
+        email_alvo = request.data.get('email')
+        novo_papel = request.data.get('papel')
+
+        if novo_papel not in Papel.values:
+            return Response({'erro': 'Papel inválido.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if novo_papel == Papel.PRESIDENTE and perfil_solicitante.papel != Papel.PRESIDENTE:
+            return Response({'erro': 'Apenas presidentes podem promover para presidente.'}, status=status.HTTP_403_FORBIDDEN)
+
+        user_alvo = get_object_or_404(User, email=email_alvo)
+        perfil_alvo, _ = PerfilUsuario.objects.get_or_create(user=user_alvo)
+
+        perfil_alvo.papel = novo_papel
+        perfil_alvo.save()
+
+        return Response({'mensagem': f'{email_alvo} promovido para {novo_papel}.'}, status=status.HTTP_200_OK)
+
+class PalestranteView(APIView):
+    def get(self, request):
+        palestrantes = Palestrante.objects.all()
+        serializer = PalestranteSerializer(palestrantes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PalestranteSerializer(data=request.data)
+        if serializer.is_valid():
+            palestrante = serializer.save()
+
+            code = f"{random.randint(100000, 999999)}"
+            send_mail(
+                subject="Seu código de primeiro acesso",
+                message=f"Olá {palestrante.display_name}, seu código de validação é: {code}",
+                from_email="noreply@symcomp.ime.usp.br",
+                recipient_list=[palestrante.email],
+                fail_silently=False,
+            )
+
+            return Response(PalestranteSerializer(palestrante).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
