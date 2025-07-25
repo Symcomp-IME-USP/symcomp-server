@@ -58,7 +58,6 @@ class PalestranteSerializer(serializers.ModelSerializer):
             link, _ = Link.objects.get_or_create(**link_data)
             palestrante.links.add(link)
 
-        # Tenta promover o usuário (caso exista) a PALESTRANTE
         try:
             user = User.objects.get(email=palestrante.email)
             perfil, _ = PerfilUsuario.objects.get_or_create(user=user)
@@ -66,7 +65,7 @@ class PalestranteSerializer(serializers.ModelSerializer):
                 perfil.papel = Papel.PALESTRANTE
                 perfil.save()
         except User.DoesNotExist:
-            pass  # Se o usuário ainda não existir, ignora a promoção
+            pass
 
         return palestrante
 
