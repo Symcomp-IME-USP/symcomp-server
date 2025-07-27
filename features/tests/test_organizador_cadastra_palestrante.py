@@ -2,7 +2,7 @@ import pytest
 from pytest_bdd import given, when, then, scenario
 from rest_framework.test import APIClient
 from django.core import mail
-from api.models import User, Link
+from api.models import User, Link, Papel, PerfilUsuario
 
 @pytest.fixture
 def client():
@@ -38,8 +38,6 @@ def test_cadastrar_palestrante_que_nao_e_usuario():
 def test_cadastrar_palestrante_que_ja_e_usuario():
     pass
 
-from api.models import PerfilUsuario, Papel
-
 @given('que Anna é organizadora')
 def organizador_esta_logado(client, organizador_dados, contexto):
     admin = User.objects.create_superuser(
@@ -61,7 +59,7 @@ def organizador_esta_logado(client, organizador_dados, contexto):
     response = client.post("/api/register/", data=organizador_dados, format='json')
     assert response.status_code == 201
 
-    # ativar Anna (caso necessário)
+    # ativar Anna
     anna = User.objects.get(email=organizador_dados["email"])
     anna.is_active = True
     anna.save()
@@ -91,10 +89,8 @@ def palestrante_eh_usuario(client, palestrante_usuario_dados):
 def organizador_informa_sobre_palestrante(client, contexto):
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
 
-    # Criação de link para usar nos dados do palestrante
     link = Link.objects.create(domain="LinkedIn", url="https://linkedin.com/in/kely")
 
-    # Envio do formulário completo com dados de Palestrante
     response = client.post("/api/palestrante/", data={
         "email": "kely@kely.com",
         "display_name": "Kely Cristina",

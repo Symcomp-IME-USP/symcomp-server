@@ -11,10 +11,20 @@ class Link(models.Model):
         return self.domain
     
 class Papel(models.TextChoices):
-    PRESIDENTE = 'presidente', 'Presidente'
-    ORGANIZADOR = 'organizador', 'Organizador'
-    PALESTRANTE = 'palestrante', 'Palestrante'
-    PARTICIPANTE = 'participante', 'Participante'
+    PRESIDENTE = 'presidente'
+    ORGANIZADOR = 'organizador'
+    PALESTRANTE = 'palestrante'
+    PARTICIPANTE = 'participante'
+
+class StatusAtividade(models.TextChoices):
+    PROVISORIA = 'provisoria'
+    CONFIRMADA = 'confirmada'
+
+class TipoAtividade(models.TextChoices):
+    PALESTRA = 'palestra'
+    ENCERRAMENTO = 'encerramento'
+    CONVERSA = 'conversa'
+    COFFEE_BREAK = 'coffee_break'
 
 class PerfilUsuario(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='perfil')
@@ -91,3 +101,12 @@ class EmailVerificationCode(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+class Atividade(models.Model):
+    tipo = models.CharField(max_length=30, choices=TipoAtividade.choices)
+    status = models.CharField(max_length=30, choices=StatusAtividade.choices, default=StatusAtividade.PROVISORIA)
+    comeca_as = models.DateTimeField(unique=True)
+    termina_as = models.DateTimeField(unique=True)
+
+    def __str__(self):
+        return self.status

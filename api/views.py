@@ -3,10 +3,12 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
-from .models import PerfilUsuario, Papel, User, EmailVerificationCode, Palestrante
+from .models import PerfilUsuario, Papel, User, Atividade, EmailVerificationCode, Palestrante
 from .serializers import (
     EmailTokenObtainPairSerializer,
-    RegisterSerializer, PalestranteSerializer
+    RegisterSerializer,
+    PalestranteSerializer,
+    AtividadeSerializer
 )
 import random
 from rest_framework import status
@@ -121,3 +123,17 @@ class PalestranteView(APIView):
 
             return Response(PalestranteSerializer(palestrante).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AtividadeView(APIView):
+    def get(self, request):
+        atividades = Atividade.objects.all()
+        serializer = AtividadeSerializer(atividades, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = AtividadeSerializer(data=request.data)
+        if serializer.is_valid():
+            atividade = serializer.save()
+            return Response(AtividadeSerializer(atividade).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
