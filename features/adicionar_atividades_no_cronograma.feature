@@ -8,7 +8,7 @@ Funcionalidade: Adicionar atividades no cronograma da Semana da Computação
 
     Cenário: Um usuário que não é organizador não deve conseguir adicionar uma atividade no cronograma
         Dado que Carlinhos não é um organizador
-        Quando ele adicionar uma atividade no cronograma
+        Quando ele tenta adicionar uma atividade no cronograma
         Então a atividade não deve ser adicionada
 
     Cenário: Um organizador não deve poder adicionar uma atividade fora dos horários do cronograma

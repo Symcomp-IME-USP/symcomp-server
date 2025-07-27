@@ -16,6 +16,23 @@ def organizador_dados():
     }
 
 @pytest.fixture
+def nao_organizador_dados():
+    return {
+        'email': 'carlinhos@carlinhos.com',
+        'name': 'Carlos Eduardo Ferreira',
+        'password': 'd1vo1ncRivel!'
+    }
+
+@pytest.fixture
+def atividade_valida_dados():
+    return {
+        "tipo": "palestra",
+        "status": "confirmada",
+        "comeca_as": "2025-10-20T12:00:00",
+        "termina_as": "2025-10-20T13:00:00"
+    }
+
+@pytest.fixture
 def contexto():
     return {}
 
@@ -23,6 +40,13 @@ def contexto():
 @scenario('../adicionar_atividades_no_cronograma.feature', 'Um organizador deve conseguir adicionar no cronograma uma atividade')
 def test_adiciona_atividade_no_cronograma():
     pass
+
+@pytest.mark.django_db
+@scenario('../adicionar_atividades_no_cronograma.feature', 'Um usuário que não é organizador não deve conseguir adicionar uma atividade no cronograma')
+def test_nao_organizador_adiciona_atividade_no_cronograma():
+    pass
+
+# --------- GIVEN ----------
 
 @given('que Odair é organizador')
 def organizador_esta_logado(client, organizador_dados, contexto):
@@ -66,20 +90,43 @@ def organizador_esta_logado(client, organizador_dados, contexto):
 
     contexto["token"] = response.data["access"]
 
+@given('que Carlinhos não é um organizador')
+def nao_organizador_esta_logado(client, contexto, nao_organizador_dados):
+    response = client.post("/api/register/", data=nao_organizador_dados, format='json')
+    assert response.status_code == 201
+
+    carlinhos = User.objects.get(email=nao_organizador_dados['email'])
+    carlinhos.is_active = True
+    carlinhos.save()
+    
+    response = client.post("/api/token/", data={
+        "email": nao_organizador_dados['email'],
+        "password": nao_organizador_dados['password']
+    }, format='json')
+
+    assert response.status_code == 200
+
+    contexto["token"] = response.data["access"]
+
+# -------- WHEN ------
+
 @when('ele adiciona uma atividade no cronograma')
-def adiciona_atividade_no_cronograma(contexto, client):
+def adiciona_atividade_no_cronograma(contexto, client, atividade_valida_dados):
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
 
-    atividade_dados = {
-        "tipo": "palestra",
-        "status": "confirmada",
-        "comeca_as": "2025-10-20T12:00:00",
-        "termina_as": "2025-10-20T13:00:00"
-    }
-
-    response = client.post("/api/atividade/", data=atividade_dados, format='json')
+    response = client.post("/api/atividade/", data=atividade_valida_dados, format='json')
     
     assert response.status_code == 201
+
+@when('ele tenta adicionar uma atividade no cronograma')
+def tenta_adicionar_atividade_no_cronograma(client, contexto, atividade_valida_dados):
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
+
+    response = client.post("/api/atividade/", data=atividade_valida_dados, format='json')
+
+    assert response.status_code == 403
+
+# --------- THEN -------
 
 @then('a atividade deve ser adicionada')
 def atividade_foi_adicionada(client, contexto):
@@ -90,3 +137,13 @@ def atividade_foi_adicionada(client, contexto):
     atividades = response.data
 
     assert [atividade["comeca_as"] == "2025-10-20T12:00:00" for atividade in atividades]
+
+@then('a atividade não deve ser adicionada')
+def atividade_nao_foi_adicionada(client, contexto):
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
+
+    response = client.get('/api/atividade/')
+    assert response.status_code == 200
+    atividades = response.data
+
+    assert len(atividades) == 0

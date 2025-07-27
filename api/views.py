@@ -125,6 +125,9 @@ class PalestranteView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class AtividadeView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request):
         atividades = Atividade.objects.all()
         serializer = AtividadeSerializer(atividades, many=True)
@@ -132,6 +135,18 @@ class AtividadeView(APIView):
     
     def post(self, request):
         serializer = AtividadeSerializer(data=request.data)
+
+        if not request.user.is_authenticated:
+            return Response({'erro': 'Autenticação necessária.'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            perfil_solicitante = request.user.perfil
+        except PerfilUsuario.DoesNotExist:
+            return Response({'erro': 'Usuário sem perfil'}, status=status.HTTP_403_FORBIDDEN)
+
+        if perfil_solicitante.papel not in [Papel.ORGANIZADOR, Papel.PRESIDENTE]:
+            return Response({'erro': 'Permissão negada.'}, status=status.HTTP_401_UNAUTHORIZED)
+
         if serializer.is_valid():
             atividade = serializer.save()
             return Response(AtividadeSerializer(atividade).data, status=status.HTTP_201_CREATED)

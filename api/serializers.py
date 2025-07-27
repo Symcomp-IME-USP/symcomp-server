@@ -86,7 +86,6 @@ class PalestranteSerializer(serializers.ModelSerializer):
         return instance
 
 class AtividadeSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Atividade
         fields = [
