@@ -1,3 +1,4 @@
+from datetime import time, date
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .validators import validate_strong_password
@@ -85,6 +86,7 @@ class PalestranteSerializer(serializers.ModelSerializer):
 
         return instance
 
+
 class AtividadeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Atividade
@@ -93,7 +95,29 @@ class AtividadeSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
 
-    def create(self, validated_data):
-        atividade = Atividade.objects.create(**validated_data)
+    def validate(self, validated_data):
+        comeca_as = validated_data.get("comeca_as")
+        termina_as = validated_data.get("termina_as")
 
-        return atividade
+        dia_min = date(comeca_as.year, 10, 20)
+        dia_max = date(comeca_as.year, 10, 24)
+
+        if not (dia_min <= comeca_as.date() <= dia_max):
+            raise serializers.ValidationError("A atividade deve começar entre os dias 20 e 24 de outubro.")
+        
+        if not (dia_min <= termina_as.date() <= dia_max):
+            raise serializers.ValidationError("A atividade deve terminar entre os dias 20 e 24 de outubro.")
+
+        hora_min = time(12, 0)
+        hora_max = time(18, 45)
+
+        if not (hora_min <= comeca_as.time() <= hora_max):
+            raise serializers.ValidationError("A atividade deve começar entre 12:00 e 18:45.")
+        
+        if not (hora_min <= termina_as.time() <= hora_max):
+            raise serializers.ValidationError("A atividade deve terminar entre 12:00 e 18:45.")
+
+        return validated_data
+
+    def create(self, validated_data):
+        return Atividade.objects.create(**validated_data)

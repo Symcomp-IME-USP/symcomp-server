@@ -46,6 +46,11 @@ def test_adiciona_atividade_no_cronograma():
 def test_nao_organizador_adiciona_atividade_no_cronograma():
     pass
 
+@pytest.mark.django_db
+@scenario('../adicionar_atividades_no_cronograma.feature', 'Um organizador não deve poder adicionar uma atividade fora dos horários do cronograma')
+def test_adiciona_atividade_fora_do_cronograma():
+    pass
+
 # --------- GIVEN ----------
 
 @given('que Odair é organizador')
@@ -125,6 +130,36 @@ def tenta_adicionar_atividade_no_cronograma(client, contexto, atividade_valida_d
     response = client.post("/api/atividade/", data=atividade_valida_dados, format='json')
 
     assert response.status_code == 403
+
+@when('ele adicionar uma atividade fora dos dias 20 a 24 de outubro')
+def adiciona_atividade_fora_dos_dias(client, contexto):
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
+
+    atividade = {
+        "tipo": "palestra",
+        "status": "confirmada",
+        "comeca_as": "2025-10-19T12:00:00",
+        "termina_as": "2025-10-19T13:00:00"
+    }
+
+    response = client.post("/api/atividade/", data=atividade, format='json')
+
+    assert response.status_code == 400
+
+@when('fora do horário das 12:00 às 18:45')
+def adiciona_atividade_fora_do_horario(client, contexto):
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
+
+    atividade = {
+        "tipo": "palestra",
+        "status": "confirmada",
+        "comeca_as": "2025-10-20T11:00:00",
+        "termina_as": "2025-10-20T12:00:00"
+    }
+
+    response = client.post("/api/atividade/", data=atividade, format='json')
+
+    assert response.status_code == 400
 
 # --------- THEN -------
 
