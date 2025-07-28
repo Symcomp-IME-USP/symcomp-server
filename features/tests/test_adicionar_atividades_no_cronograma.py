@@ -51,6 +51,11 @@ def test_nao_organizador_adiciona_atividade_no_cronograma():
 def test_adiciona_atividade_fora_do_cronograma():
     pass
 
+@pytest.mark.django_db
+@scenario('../adicionar_atividades_no_cronograma.feature', 'Um organizador não deve poder adicionar uma atividade que não está livre no cronograma')
+def test_adiciona_uma_atividade_no_horario_de_outra():
+    pass
+
 # --------- GIVEN ----------
 
 @given('que Odair é organizador')
@@ -161,6 +166,22 @@ def adiciona_atividade_fora_do_horario(client, contexto):
 
     assert response.status_code == 400
 
+@when('ele adicionar uma atividade na segunda feira às 12:00')
+def adiciona_uma_atividade_no_horario_da_segunda(client, contexto, atividade_valida_dados):
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
+
+    response = client.post("/api/atividade/", data=atividade_valida_dados, format='json')
+
+    assert response.status_code == 201
+
+@when('adiciona outra atividade no mesmo horário da segunda feira às 12:00')
+def adiciona_uma_outra_atividade_no_mesmo_horario(client,contexto, atividade_valida_dados):
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
+    
+    response = client.post("/api/atividade/", data=atividade_valida_dados, format='json')
+
+    assert response.status_code == 400
+
 # --------- THEN -------
 
 @then('a atividade deve ser adicionada')
@@ -182,3 +203,13 @@ def atividade_nao_foi_adicionada(client, contexto):
     atividades = response.data
 
     assert len(atividades) == 0
+
+@then('só deve ser adicionada uma atividade')
+def atividade_no_mesmo_horario_nao_pode_ser_adicionada(client, contexto):
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {contexto['token']}")
+
+    response = client.get('/api/atividade/')
+    assert response.status_code == 200
+    atividades = response.data
+
+    assert len(atividades) == 1
