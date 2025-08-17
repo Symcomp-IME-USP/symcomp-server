@@ -10,11 +10,13 @@ from .serializers import (
     PalestranteSerializer,
     AtividadeSerializer
 )
-import random
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from .lib.user_validation_code_email import UserValidationCodeEmail
+
+import random
 
 class RegisterView(APIView):
     def post(self, request):
@@ -26,17 +28,8 @@ class RegisterView(APIView):
             return Response({"error": "Usuário já existe"}, status=status.HTTP_409_CONFLICT)
 
         user = serializer.save()
-        
-        code = f"{random.randint(100000, 999999)}"
-        EmailVerificationCode.objects.create(user=user, code=code)
 
-        send_mail(
-            subject="Seu código de validação",
-            message=f"Olá {user.name}, seu código de validação é: {code}",
-            from_email="noreply@symcomp.ime.usp.br",
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
+        UserValidationCodeEmail(user).send()
 
         return Response(
             {"message": "Usuário criado. Código de validação enviado por e-mail."},
