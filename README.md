@@ -16,6 +16,12 @@ pip install -r requirements.txt
 Run the migrations
 
 ```bash
-python manage.py makemigrations
+python manage.py makemigrations api
 python manage.py migrate
+```
+
+Run the server
+
+```bash
+python manage.py runserver
 ```
