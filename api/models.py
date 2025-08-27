@@ -110,3 +110,10 @@ class Atividade(models.Model):
 
     def __str__(self):
         return self.status
+
+class AtivictyHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Atividade, on_delete=models.CASCADE)
+
+    def get_hours(self):
+        
