@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.db.models import Sum, F, ExpressionWrapper, IntegerField
 
 class Link(models.Model):
     domain = models.CharField(max_length=100)
@@ -115,5 +116,12 @@ class AtivictyHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Atividade, on_delete=models.CASCADE)
 
-    def get_hours(self):
-        
+    def get_hours(self, name : str):
+        hours = (
+            AtivictyHistory.objects
+            .filter(user_name=name)
+            .annotate(duracao=F('activity_termina_as') - F('activity_comeca_as'))
+            .aggregate(total=Sum('duracao'))
+        )
+
+        return hours
