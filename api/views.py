@@ -192,9 +192,10 @@ class AtividadeView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CertificateView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [JWTAuthentication]
+    #permission_classes = [IsAuthenticated]
 
     def get(self, request, user):
-        user = User(data=request.data)
+        #user = User(data=request.data)
+        certificate_gen(user, "45")
         return Response(status=status.HTTP_200_OK)
