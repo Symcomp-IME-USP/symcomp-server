@@ -112,13 +112,13 @@ class Atividade(models.Model):
     def __str__(self):
         return self.status
 
-class AtivictyHistory(models.Model):
+class ActivityHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Atividade, on_delete=models.CASCADE)
 
     def get_hours(self, name : str):
         hours = (
-            AtivictyHistory.objects
+            ActivityHistory.objects
             .filter(user_name=name)
             .annotate(duracao=F('activity_termina_as') - F('activity_comeca_as'))
             .aggregate(total=Sum('duracao'))

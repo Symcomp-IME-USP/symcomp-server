@@ -2,7 +2,7 @@ from datetime import time, date
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .validators import validate_strong_password
-from .models import Palestrante, Link, User, PerfilUsuario, Papel, Atividade, AtivictyHistory
+from .models import Palestrante, Link, User, PerfilUsuario, Papel, Atividade, ActivityHistory
 
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -124,8 +124,8 @@ class AtividadeSerializer(serializers.ModelSerializer):
 
 class CertitifcateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AtivictyHistory
+        model = ActivityHistory
         fields = ['id', 'user', 'activity']
 
     def create(self, validated_data):
-        return AtivictyHistory.objects.create(**validated_data)
+        return ActivityHistory.objects.create(**validated_data)

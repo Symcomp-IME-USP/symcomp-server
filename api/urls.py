@@ -1,4 +1,4 @@
-ffrom rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,9 +16,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-rom django.urls import path, include
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AtividadeView, RegisterView, EmailTokenObtainPairView, ValidateCodeView, PromoverUsuarioView, PalestranteView, RefreshAccessTokenView
+from .views import AtividadeView, RegisterView, EmailTokenObtainPairView, ValidateCodeView, PromoverUsuarioView, PalestranteView, RefreshAccessTokenView, CertificateView
 
 router = DefaultRouter()
 
@@ -30,5 +30,6 @@ urlpatterns = [
     path("validate-code/", ValidateCodeView.as_view(), name="validate_code"),
     path('promover/', PromoverUsuarioView.as_view(), name='promover-usuario'),
     path("palestrante/", PalestranteView.as_view(), name='palestrante'),
-    path("atividade/", AtividadeView.as_view(), name='atividade')
+    path("atividade/", AtividadeView.as_view(), name='atividade'),
+    path("certificado/", CertificateView.as_view(), name='certificado')
 ]
