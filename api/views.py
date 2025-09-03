@@ -15,6 +15,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .lib.user_validation_code_email import UserValidationCodeEmail
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 import random
 
@@ -36,8 +38,50 @@ class RegisterView(APIView):
             status=status.HTTP_201_CREATED
         )
 
+
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
+
+    dias_validos = 14
+    validade = 7*24*60*60 * dias_validos # validade de dias_validos em segundos
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user = serializer.user
+        refresh = RefreshToken.for_user(user)
+        access = str(refresh.access_token)
+
+        response = Response({
+            'access': access,
+        })
+
+        response.set_cookie(
+            key='refresh',
+            value=str(refresh),
+            httponly=True,
+            secure=False,
+            samesite='Lax',
+            max_age=self.validade
+        )
+
+        return response
+
+
+class RefreshAccessTokenView(APIView):
+    def post(self, request):
+        refresh_token = request.COOKIES.get('refresh')
+        if not refresh_token:
+            return Response({'detail': 'Refresh token not found'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            new_access = str(refresh.access_token)
+            return Response({'access': new_access})
+        except TokenError:
+            return Response({'detail': 'Invalid or expired refresh token'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class ValidateCodeView(APIView):
     def post(self, request):
