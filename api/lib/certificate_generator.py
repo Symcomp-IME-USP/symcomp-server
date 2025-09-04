@@ -7,6 +7,6 @@ def certificate_gen(name : str, hours : int):
     fontHour = ImageFont.truetype("arial.ttf", 45)
 
     draw.text((500, 300), name, font=fontName, fill="black")
-    draw.text((500, 400), f"{hours} horas", font=fontHour, fill="black")
+    draw.text((500, 400), f"{hours}", font=fontHour, fill="black")
 
     base.save(f"certificado_{name}.pdf", "PDF")

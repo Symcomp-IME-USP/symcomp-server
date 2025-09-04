@@ -122,7 +122,7 @@ class AtividadeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Atividade.objects.create(**validated_data)
 
-class CertitifcateSerializer(serializers.ModelSerializer):
+class CertitificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityHistory
         fields = ['id', 'user', 'activity']

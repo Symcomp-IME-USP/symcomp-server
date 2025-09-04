@@ -3,12 +3,13 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
-from .models import PerfilUsuario, Papel, User, Atividade, EmailVerificationCode, Palestrante
+from .models import PerfilUsuario, Papel, User, Atividade, EmailVerificationCode, Palestrante, ActivityHistory
 from .serializers import (
     EmailTokenObtainPairSerializer,
     RegisterSerializer,
     PalestranteSerializer,
-    AtividadeSerializer
+    AtividadeSerializer,
+    CertitificateSerializer
 )
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -191,20 +192,18 @@ class AtividadeView(APIView):
             return Response(AtividadeSerializer(atividade).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ActivityHistory(APIView):
-    def post(self, request):
-        user_id = request.data.get("user_id")
-        activity_id = request.data.get("atividade_id")
-        user = User.objects.get(id=user_id)
-        activity = Atividade.objects.get(id=activity_id)
-        ah = ActivityHistory.objects.get()
-
 class CertificateView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [JWTAuthentication]
+    #permission_classes = []
 
-    def get(self, request):
-        #user = User(data=)
-        user="Ana"
-        certificate_gen(user, "45")
-        return Response(status=status.HTTP_200_OK)
+    def post(self, request):
+        nome = request.data.get("nome")
+        email = request.data.get("email")
+
+        if not nome or not email:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        hours = ActivityHistory.get_hours(nome)
+
+        certificate_gen(nome, hours)
+        return Response(status=status.HTTP_201_CREATED)
