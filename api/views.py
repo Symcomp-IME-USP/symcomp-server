@@ -20,7 +20,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 import random
 
-from api.services.certificate_service import certificate_gen
+from .lib.certificate_generator import certificate_gen
 
 class RegisterView(APIView):
     def post(self, request):
@@ -191,11 +191,20 @@ class AtividadeView(APIView):
             return Response(AtividadeSerializer(atividade).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CertificateView(APIView):
-    #authentication_classes = [JWTAuthentication]
-    #permission_classes = [IsAuthenticated]
+class ActivityHistory(APIView):
+    def post(self, request):
+        user_id = request.data.get("user_id")
+        activity_id = request.data.get("atividade_id")
+        user = User.objects.get(id=user_id)
+        activity = Atividade.objects.get(id=activity_id)
+        ah = ActivityHistory.objects.get()
 
-    def get(self, request, user):
-        #user = User(data=request.data)
+class CertificateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        #user = User(data=)
+        user="Ana"
         certificate_gen(user, "45")
         return Response(status=status.HTTP_200_OK)
