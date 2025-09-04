@@ -1,0 +1,17 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: symcomp-backend-test
+    working_dir: /app
+    environment:
+      DJANGO_SETTINGS_MODULE: backend.settings
+      DATABASE_NAME: cpqs_abertas_test
+      DATABASE_USER: dev
+      DATABASE_PASSWORD: devsermesmo
+      DATABASE_HOST: symcomp-postgres
+      DATABASE_PORT: 5432
+    entrypoint: ["/app/entrypoint-test.sh"]
+    depends_on:
+      - symcomp-postgres
