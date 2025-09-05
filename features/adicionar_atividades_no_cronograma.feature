@@ -22,3 +22,8 @@ Funcionalidade: Adicionar atividades no cronograma da Semana da Computação
         Quando ele adicionar uma atividade na segunda feira às 12:00
         E adiciona outra atividade no mesmo horário da segunda feira às 12:00
         Então só deve ser adicionada uma atividade
+
+    Cenário: Um QR code deve ser gerado automaticamente ao criar uma atividade
+        Dado que Odair é organizador
+        Quando ele adiciona uma atividade no cronograma
+        Então um QR code deve ser gerado para a atividade
