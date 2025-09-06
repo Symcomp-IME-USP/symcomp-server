@@ -66,5 +66,5 @@ node_modules/
 # System
 Thumbs.db
 
-# uv
-pyproject.toml
+# Certificates
+api/static/certificates_tmp/
