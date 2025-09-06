@@ -9,4 +9,4 @@ def certificate_gen(name : str, hours : int):
     draw.text((500, 300), name, font=fontName, fill="black")
     draw.text((500, 400), f"{hours}", font=fontHour, fill="black")
 
-    base.save(f"certificado_{name}.pdf", "PDF")
+    base.save(f"api/static/certificates_tmp/certificado_{name}.pdf", "PDF")

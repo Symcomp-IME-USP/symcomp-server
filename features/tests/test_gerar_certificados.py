@@ -19,10 +19,10 @@ def test_gerar_certificado():
 def pessoa_nao_cadastrada():
     pass 
 
-@when("ela preenche com o seu nome e email, e participa de um evento")
+@when("ela preenche com o seu nome e email")
 def preenche_forms(contexto):
     contexto['ouvinte'] = {
-        "nome" : "João das Couves",
+        "name" : "João das Couves",
         "email" : "joao.couves@usp.br"
     }
 

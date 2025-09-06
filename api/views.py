@@ -197,7 +197,7 @@ class CertificateView(APIView):
     #permission_classes = []
 
     def post(self, request):
-        nome = request.data.get("nome")
+        nome = request.data.get("name")
         email = request.data.get("email")
 
         if not nome or not email:

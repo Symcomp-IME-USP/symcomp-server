@@ -130,7 +130,9 @@ class ActivityHistory(models.Model):
             .annotate(duracao=F('activity__termina_as') - F('activity__comeca_as'))
             .aggregate(total=Sum('duracao'))
         )
-
+        
+        if hours['total'] is None:
+            return 0
         return int(hours['total'].total_seconds()/3600)
     
 class Certificate(models.Model):
