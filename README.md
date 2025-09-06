@@ -38,6 +38,14 @@ To make sure the docker is working properly you can do
 docker ps
 ```
 
+## Tests
+
+Always run the tests in the container.
+
+```bash
+docker compose run --rm test
+```
+
 ## Compiling each project individually (not recommended)
 
 If you really need to test something up, make sure to follow below.
