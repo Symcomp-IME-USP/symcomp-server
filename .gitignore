@@ -54,6 +54,9 @@ htmlcov/
 .pylint.d/
 ruff_cache/
 
+# QR codes
+qr_codes/
+
 # Build artifacts
 build/
 dist/
