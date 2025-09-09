@@ -4,12 +4,12 @@ from .models import User
 
 class UserAdmin(BaseUserAdmin):
     ordering = ['email']
-    list_display = ['email', 'name', 'is_staff']
+    list_display = ['email', 'name', 'eh_verificado', 'eh_organizador', 'eh_presidente', 'is_staff']
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Informações Pessoais', {'fields': ('name',)}),
-        ('Permissões', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
-        ('Datas Importantes', {'fields': ('last_login',)}),
+        ('Informações Pessoais', {'fields': ('name', 'username')}),
+        ('Permissões', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Datas Importantes', {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (
         (None, {
@@ -17,6 +17,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'name', 'password1', 'password2'),
         }),
     )
-    search_fields = ('email',)
+    
+    search_fields = ('email', 'username', 'name')
 
 admin.site.register(User, UserAdmin)
