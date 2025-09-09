@@ -151,6 +151,25 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+class Jogador(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="jogador"
+    )
+
+    pontos = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'Jogador {self.user.username}'
+    
+    def ganha_pontos(self, valor : int):
+        """Adiciona pontos à pontuação do jogador"""
+        if valor > 0:
+            self.pontos += valor
+            self.save()
+
 class EmailVerificationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="verification_codes")
     code = models.CharField(max_length=6)
