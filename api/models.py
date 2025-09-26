@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.db.models import Sum, F, ExpressionWrapper, IntegerField
 from .lib.qr_code_generator import generate_qr_code
 
 class Link(models.Model):
@@ -90,6 +91,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def get_user(self, email):
+        try:
+            return User.objects.get(email=email).id
+        except User.DoesNotExist:
+            return None
 
 class EmailVerificationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="verification_codes")
@@ -131,3 +138,23 @@ class Atividade(models.Model):
 
     def __str__(self):
         return f"{self.get_tipo_display()} - {self.comeca_as.strftime('%d/%m/%Y %H:%M')}"
+
+class ActivityHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Atividade, on_delete=models.CASCADE)
+
+    @classmethod
+    def get_hours(self, name : str):
+        hours = (
+            ActivityHistory.objects
+            .filter(user__name=name)
+            .annotate(duracao=F('activity__termina_as') - F('activity__comeca_as'))
+            .aggregate(total=Sum('duracao'))
+        )
+        
+        if hours['total'] is None:
+            return 0
+        return int(hours['total'].total_seconds()/3600)
+    
+class Certificate(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -3,12 +3,13 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
-from .models import PerfilUsuario, Papel, User, Atividade, EmailVerificationCode, Palestrante
+from .models import PerfilUsuario, Papel, User, Atividade, EmailVerificationCode, Palestrante, ActivityHistory
 from .serializers import (
     EmailTokenObtainPairSerializer,
     RegisterSerializer,
     PalestranteSerializer,
-    AtividadeSerializer
+    AtividadeSerializer,
+    CertitificateSerializer
 )
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -19,6 +20,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 
 import random
+
+from .lib.certificate_generator import certificate_gen
 
 class RegisterView(APIView):
     def post(self, request):
@@ -188,4 +191,19 @@ class AtividadeView(APIView):
             atividade = serializer.save()
             return Response(AtividadeSerializer(atividade).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+class CertificateView(APIView):
+    #authentication_classes = [JWTAuthentication]
+    #permission_classes = []
+
+    def post(self, request):
+        nome = request.data.get("name")
+        email = request.data.get("email")
+
+        if not nome or not email:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        hours = ActivityHistory.get_hours(nome)
+
+        certificate_gen(nome, hours)
+        return Response(status=status.HTTP_201_CREATED)
