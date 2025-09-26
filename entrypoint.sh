@@ -14,5 +14,8 @@ python manage.py makemigrations --noinput
 echo "Applying migrations..."
 python manage.py migrate --noinput
 
+echo "Seeding database..."
+python seed.py
+
 echo "Running server..."
 exec python manage.py runserver 0.0.0.0:8000
