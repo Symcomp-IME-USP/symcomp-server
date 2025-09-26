@@ -1,7 +1,7 @@
 services:
-  postgres:
+  symcomp-postgres:
     image: postgres:15
-    container_name: postgres-dev
+    container_name: symcomp-postgres-dev
     restart: unless-stopped
     environment:
       POSTGRES_DB: symcomp_db
@@ -10,4 +10,26 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - symcomp_postgres_data:/var/lib/postgresql/data
+
+  symcomp-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: symcomp-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - symcomp-postgres
+    environment:
+      DJANGO_SETTINGS_MODULE: backend.settings
+      DATABASE_NAME: symcomp_db
+      DATABASE_USER: dev
+      DATABASE_PASSWORD: devsermesmo
+      DATABASE_HOST: symcomp-postgres
+      DATABASE_PORT: 5432
+    entrypoint: ["/app/entrypoint.sh"]
+
+volumes:
+  symcomp_postgres_data:

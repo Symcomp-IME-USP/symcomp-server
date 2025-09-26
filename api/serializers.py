@@ -91,9 +91,9 @@ class AtividadeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Atividade
         fields = [
-            "id", "tipo", "status", "comeca_as", "termina_as"
+            "id", "tipo", "status", "comeca_as", "termina_as", "qr_code"
         ]
-        read_only_fields = ["id"]
+        read_only_fields = ["id", "qr_code"]
 
     def validate(self, validated_data):
         comeca_as = validated_data.get("comeca_as")
