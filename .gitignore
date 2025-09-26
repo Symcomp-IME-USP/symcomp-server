@@ -70,4 +70,4 @@ node_modules/
 Thumbs.db
 
 # Certificates
-api/static/certificates_tmp/
+api/static/
