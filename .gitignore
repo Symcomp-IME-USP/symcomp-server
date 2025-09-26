@@ -13,7 +13,6 @@ media/
 staticfiles/
 static_root/
 .env
-.env.*
 
 # Django migrations (opcional: se você quiser ignorar migrations)
 **/migrations/

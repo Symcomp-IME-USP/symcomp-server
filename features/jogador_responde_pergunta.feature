@@ -9,7 +9,7 @@ Funcionalidade: Jogador responde pergunta
         E ela está correta
         Então ele deve receber pontos pelo acerto
 
-    Cenaŕio: Jogador responde pergunta, mas está incorreta
+    Cenário: Jogador responde pergunta, mas está incorreta
         Dado que existe um jogador
         * que existe um desafio
         E que existe perguntas no desafio

@@ -2,7 +2,9 @@ import pytest
 from pytest_bdd import given, when, then, scenario
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
-from desafio.models import Desafio, Questao, PerfilUsuario, Papel
+from desafio.models import Desafio
+from desafio.questao.models import Questao
+from api.models import PerfilUsuario, Papel
 
 User = get_user_model()
 
