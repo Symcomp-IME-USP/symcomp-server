@@ -9,14 +9,6 @@ It is imperative the use of Docker to guarantee the consistency throught the dev
 
 ## Getting Started
 
-Create a `.env` file in the root directory by running
-
-```bash
-cp .env.example .env
-```
-
-Update the values in the file according to the informations in `docker-compose.yml`.
-
 In the project root execute
 
 ```bash
@@ -24,7 +16,7 @@ chmod +x ./entrypoint.sh
 chmod +x ./entrypoint-test.sh
 docker compose build --no-cache
 docker compose up -d
-docker compose symcomp-backend ./entrypoint.sh
+docker compose exec symcomp-backend ./entrypoint.sh
 ```
 
 Then, you can access the urls below to check it running

@@ -88,7 +88,7 @@ DATABASES = {
         "NAME": os.getenv("DB_NAME", "symcomp_db"),
         "USER": os.getenv("DB_USER", "dev"),
         "PASSWORD": os.getenv("DB_PASSWORD", "devsermesmo"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
+        "HOST": os.getenv("DB_HOST", "symcomp-postgres"),
         "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
