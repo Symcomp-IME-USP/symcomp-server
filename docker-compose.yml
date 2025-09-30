@@ -31,5 +31,26 @@ services:
       DATABASE_PORT: 5432
     entrypoint: ["/app/entrypoint.sh"]
 
+  symcomp-locust:
+    build:
+      context: .
+      dockerfile: Dockerfile.locust
+    container_name: symcomp-locust
+    ports:
+      - "8089:8089"
+    environment:
+      LOCUST_HOST: http://symcomp-backend:8000
+    volumes:
+      - ./loadtests:/app/loadtests
+    command:
+      [
+        "-f",
+        "/app/loadtests/locustfile.py",
+        "--host",
+        "http://symcomp-backend:8000",
+        "--web-host",
+        "0.0.0.0",
+      ]
+
 volumes:
   symcomp_postgres_data:
