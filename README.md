@@ -47,6 +47,20 @@ Always run the tests in the container.
 docker compose run --rm test
 ```
 
+## Load Testing
+
+The project includes Locust for load testing. To run load tests, make sure the containers are up and access the Locust web interface at:
+
+```
+http://localhost:8089
+```
+
+To stop the load testing:
+
+```bash
+docker compose stop symcomp-locust
+```
+
 ## Compiling each project individually (not recommended)
 
 If you really need to test something up, make sure to follow below.
