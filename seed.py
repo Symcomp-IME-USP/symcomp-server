@@ -11,7 +11,13 @@ print("Seeding database...")
 
 if not User.objects.filter(email="admin@example.com").exists():
     User.objects.create_superuser(
-        email="admin@example.com",
-        name="admin",
-        password="admin"
+        email="admin@symcomp.ime.usp.br",
+        name="Administrador",
+        password="symcompmelhorquesemcomp"
+    )
+if not User.objects.filter(email="jonathas@symcomp.ime.usp.br").exists():
+    User.objects.create_user(
+        email="jonathas@symcomp.ime.usp.br",
+        name="Jonathas Castilho",
+        password="jojotadinho"
     )

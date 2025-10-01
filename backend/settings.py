@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,6 +37,7 @@ ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
     'api',
+    'desafio',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,9 +83,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME", "symcomp_db"),
+        "USER": os.getenv("DB_USER", "dev"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "devsermesmo"),
+        "HOST": os.getenv("DB_HOST", "symcomp-postgres"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
@@ -134,3 +144,9 @@ CORS_ALLOW_CREDENTIALS = True
 AUTH_USER_MODEL = 'api.User'
 
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}

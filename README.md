@@ -12,10 +12,11 @@ It is imperative the use of Docker to guarantee the consistency throught the dev
 In the project root execute
 
 ```bash
-chmod +x ./backend/entrypoint.sh
-chmod +x ./backend/entrypoint-test.sh
+chmod +x ./entrypoint.sh
+chmod +x ./entrypoint-test.sh
 docker compose build --no-cache
 docker compose up -d
+docker compose exec symcomp-backend ./entrypoint.sh
 ```
 
 Then, you can access the urls below to check it running

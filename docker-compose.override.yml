@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: symcomp-backend-test
     working_dir: /app
+    volumes:
+      - .:/app
     environment:
       DJANGO_SETTINGS_MODULE: backend.settings
       DATABASE_NAME: cpqs_abertas_test
